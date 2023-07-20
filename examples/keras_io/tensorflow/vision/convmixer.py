@@ -42,11 +42,10 @@ pip install -U -q tensorflow-addons
 ## Imports
 """
 
-from tensorflow.keras import layers
-from tensorflow import keras
+import keras_core as keras
+import keras_core.layers as layers
 
 import matplotlib.pyplot as plt
-import tensorflow_addons as tfa
 import tensorflow as tf
 import numpy as np
 
@@ -175,7 +174,7 @@ def get_conv_mixer_256_8(
         x = conv_mixer_block(x, filters, kernel_size)
 
     # Classification block.
-    x = layers.GlobalAvgPool2D()(x)
+    x = layers.GlobalAveragePooling2D()(x)
     outputs = layers.Dense(num_classes, activation="softmax")(x)
 
     return keras.Model(inputs, outputs)
@@ -196,7 +195,7 @@ parameters.
 
 
 def run_experiment(model):
-    optimizer = tfa.optimizers.AdamW(
+    optimizer = keras.optimizers.AdamW(
         learning_rate=learning_rate, weight_decay=weight_decay
     )
 
@@ -206,7 +205,7 @@ def run_experiment(model):
         metrics=["accuracy"],
     )
 
-    checkpoint_filepath = "/tmp/checkpoint"
+    checkpoint_filepath = "/tmp/checkpoint.weights.h5"
     checkpoint_callback = keras.callbacks.ModelCheckpoint(
         checkpoint_filepath,
         monitor="val_accuracy",
